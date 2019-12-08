@@ -1,7 +1,7 @@
 # Purescript React Basic Storybook
 
 # Requirements
-This is intended to be used with the hooks version of react basic.
+This is intended to be used with [the hooks version of react basic](https://github.com/spicydonuts/purescript-react-basic-hooks).
 
 You need to use [spago](https://github.com/spacchetti/spago) and [purs-loader](https://github.com/ethul/purs-loader) in order for this to work. 
 
