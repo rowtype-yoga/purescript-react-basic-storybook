@@ -6,7 +6,7 @@ This is intended to be used with the hooks version of react basic.
 You need to use webpack and purs-loader in order for this to work. 
 
 # Using it
-You will need to add this to your package set (I don't support bower):
+You will need to add this to your `packages.dhall` (I don't support bower):
 
 In `additions`:
 ```
