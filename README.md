@@ -10,7 +10,7 @@ You will need to add this to your package set (I don't support bower):
 
 In `additions`:
 ```
- react-testing-library =
+ react-basic-storybook =
          { dependencies =
              [ "console"
              , "effect"
@@ -20,7 +20,7 @@ In `additions`:
          , repo =
              "https://github.com/i-am-the-slime/purescript-react-basic-storybook.git"
          , version =
-             "the latest commit hash"
+             "75db8aaa6ed2b3d0343246393d8ac76e94662135"
          }
 ```
 
