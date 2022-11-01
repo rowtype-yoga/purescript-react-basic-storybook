@@ -2,12 +2,13 @@
 Welcome to a Spago project!
 You can edit this file as you like.
 -}
-{ name =
-    "my-project"
+{ name = "my-project"
 , dependencies =
-    [ "console", "effect", "psci-support", "react-basic-hooks" ]
-, packages =
-    ./packages.dhall
-, sources =
-    [ "src/**/*.purs", "test/**/*.purs" ]
+  [ "effect"
+  , "prelude"
+  , "react-basic"
+  , "unsafe-coerce"
+  ]
+, packages = ./packages.dhall
+, sources = [ "src/**/*.purs" ]
 }
