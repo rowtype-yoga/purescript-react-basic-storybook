@@ -9,4 +9,4 @@ spago install react-basic-storybook
 ```
 
 # Example
-Check out the example in the [example](./example) folder and see the corresponding Storybook [here](https://www.chromatic.com/library?appId=63615499f3163eab46c7e50a&branch=master)
+Check out the example in the [example](./example) folder and see the corresponding Storybook [here](https://www.chromatic.com/library?appId=6361654082cc659cc6303ca4)

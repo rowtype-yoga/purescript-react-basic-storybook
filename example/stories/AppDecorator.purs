@@ -19,8 +19,7 @@ mkPageContainer = do
     R.div
       { style: R.css
           { background: "radial-gradient(#e0e2e5 67%, #d0d2d5 100%)"
-          , minWidth: "100%"
-          , minHeight: "80vh"
+          , padding: "3vw"
           , display: "flex"
           , justifyContent: "center"
           , alignItems: "center"
