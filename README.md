@@ -9,4 +9,4 @@ spago install react-basic-storybook
 ```
 
 # Example
-Check out the example in the [example](./example) folder and see the corresponding Storybook [here](https://github.com/i-am-the-slime/purescript-react-basic-storybook/blob/branch/example/storybook-static/index.html)
+Check out the example in the [example](./example) folder and see the corresponding Storybook [here](https://github.com/i-am-the-slime/purescript-react-basic-storybook/blob/master/example/storybook-static/index.html)
