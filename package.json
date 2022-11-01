@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/i-am-the-slime/purescript-react-basic-storybook#readme",
   "devDependencies": {
+    "chromatic": "^6.11.4",
     "purescript": "^0.15.6",
     "spago": "^0.20.9"
   }
