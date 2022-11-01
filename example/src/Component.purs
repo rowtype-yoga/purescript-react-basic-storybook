@@ -22,7 +22,7 @@ mkButton = do
             , appearance: "none"
             , border: "1px solid #eee"
             , borderTop: "1px solid #fff"
-            , color: "#444"
+            , color: "#44404c"
             , cursor: "pointer"
             , background: "#f6f8f9"
             , padding: "8px 16px"

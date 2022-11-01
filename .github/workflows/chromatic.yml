@@ -1,0 +1,48 @@
+# .github/workflows/chromatic.yml
+
+# Workflow name
+name: 'Chromatic Publish'
+
+# Event for the workflow
+on: push
+
+# List of jobs
+jobs:
+  test:
+    # Operating System
+    runs-on: ubuntu-latest
+    # Job steps
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: purescript-contrib/setup-purescript@main
+
+      - name: Cache PureScript dependencies
+        uses: actions/cache@v2
+        # This cache uses the .dhall files to know when it should reinstall
+        # and rebuild packages. It caches both the installed packages from
+        # the `.spago` directory and compilation artifacts from the `output`
+        # directory. When restored the compiler will rebuild any files that
+        # have changed. If you do not want to cache compiled output, remove
+        # the `output` path.
+        with:
+          key: ${{ runner.os }}-spago-${{ hashFiles('**/*.dhall') }}
+          path: |
+            example/.spago
+            example/output
+
+      - run: spago -x stories.dhall build
+        working-directory: ./example
+
+      - run: npm install
+        working-directory: ./example
+        #👇 Adds Chromatic as a step in the workflow
+      - uses: chromaui/action@v1
+        # Options required for Chromatic's GitHub Action
+        with:
+          #👇 Chromatic projectToken,
+          workingDir: example
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
