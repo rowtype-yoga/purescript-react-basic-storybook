@@ -8,11 +8,15 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "chromatic": "^6.11.4",
     "storybook": "^7.0.0-alpha.45",
     "@storybook/react-webpack5": "^7.0.0-alpha.45"
   },
   "scripts": {
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  }
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic --project-token=f42aeee7816d"
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "react-basic-storybook-example@1.0.0"
 }
