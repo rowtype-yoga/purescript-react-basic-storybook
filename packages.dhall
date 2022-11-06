@@ -120,8 +120,9 @@ let upstream =
       https://github.com/purescript/package-sets/releases/download/psc-0.15.4-20221028/packages.dhall
         sha256:9193f88e77654ccca02c1f7519c81308aca69818b6513ea8e47618e4dd3bf750
 
-let overrides = {=}
-
-let additions = {=}
-
-in  upstream // overrides // additions
+in  upstream
+  with record-studio =
+    { repo = "https://github.com/rowtype-yoga/purescript-record-studio.git"
+    , version = "v1.0.1"
+    , dependencies = [ "heterogeneous", "lists", "prelude", "record", "typelevel-prelude" ]
+    }

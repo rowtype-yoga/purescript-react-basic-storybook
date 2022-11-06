@@ -8,9 +8,15 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "storybook": "^7.0.0-alpha.47",
+    "@storybook/addon-essentials": "^7.0.0-alpha.47",
+    "@storybook/addon-interactions": "^7.0.0-alpha.47",
+    "@storybook/react-webpack5": "^7.0.0-alpha.47",
+    "@storybook/testing-library": "^0.0.13",
+    "@storybook/types": "^7.0.0-alpha.47",
+    "@types/react-syntax-highlighter": "^15.5.5",
     "chromatic": "^6.11.4",
-    "storybook": "^7.0.0-alpha.45",
-    "@storybook/react-webpack5": "^7.0.0-alpha.45"
+    "react-syntax-highlighter": "^15.5.0"
   },
   "scripts": {
     "storybook": "storybook dev -p 6006",
