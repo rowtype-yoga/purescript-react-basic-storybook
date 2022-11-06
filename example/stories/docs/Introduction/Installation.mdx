@@ -1,0 +1,73 @@
+import Checkbox from "./Checkbox.tsx"
+
+# Installation
+
+⚠️ The initial setup involves quite a few steps but if you're strong for 5 minutes, you'll be rewarded.
+
+I added some checkboxes (<Checkbox />) so you can keep track of how far you got (<Checkbox checked />).
+
+### JavaScript setup
+
+<Checkbox /> Install the NPM packages:
+
+```sh
+npm install -D \
+  storybook@next \
+  @storybook/addon-essentials@next \
+  @storybook/addon-interactions@next \
+  @storybook/react-webpack@next \
+  @storybook/testing-library
+```
+
+<Checkbox /> Add two JavaScript scripts in `package.json`:
+```json
+  "scripts": {
+    //...,
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+    }
+```
+
+<Checkbox /> Create a `.storybook` folder in the top level directory.
+
+Then
+  - <Checkbox /> Copy [`.storybook/main.ts`](https://github.com/rowtype-yoga/purescript-react-basic-storybook/tree/main/example/.storybook/main.ts) (👈🏾 this is a link)
+  - <Checkbox /> And [`.storybook/purescript-indexer.ts`](https://github.com/rowtype-yoga/purescript-react-basic-storybook/tree/main/example/.storybook/purescript-indexer.ts) (👈🏾 this is a link, too)
+
+to your `.storybook/` folder.
+
+### This concludes the JavaScript setup 🎉
+
+Now the PureScript setup
+
+## Setup PureScript project
+
+<Checkbox /> Create the folder `/stories/Story` where all your stories will live
+
+<Checkbox /> Create a `stories.dhall` file in your project root with this content:
+
+```dhall
+let conf = ./spago.dhall
+
+in    conf
+    ⫽ { sources = conf.sources # [ "stories/**/*.purs" ]
+      , dependencies =
+            conf.dependencies
+          # [ "react-basic-storybook"
+            , "web-html"
+            , "aff"
+            , "aff-promise"
+            , "record"
+            , "unsafe-coerce"
+            , "web-dom"
+            , "debug"
+            ]
+      }
+```
+
+Now you can build your stories with `spago -x stories.dhall build`.
+
+But you don't actually have any stories yet!
+
+
+Now you can play around with the [general workflow](./?path=/docs/introduction-workflow--docs).

@@ -1,0 +1,44 @@
+# General Worfklow
+
+Run this in a terminal on the side:
+
+```sh
+npm run storybook
+```
+
+This will open your Browser on `http://localhost:6006` and you can live edit
+your stories and components in your favourite text editor.
+
+## Your first story
+Create the following file under `/stories/Story/HelloStorybook`
+
+```purescript
+module Story.HelloStorybook (default, helloStorybook, helloPureScript) where
+
+import Prelude
+
+import React.Basic.DOM as R
+import React.Basic.Hooks as React
+import Storybook (Meta, Story, meta, simpleStory)
+
+default :: Meta
+default = meta { component: mkHello }
+
+helloStorybook ∷ Story
+helloStorybook = simpleStory "Storybook"
+
+helloPureScript ∷ Story
+helloPureScript = simpleStory "PureScript"
+
+-- The component that this "Story" is about
+-- This would usually be a component from your main project
+mkHello :: React.Component String
+mkHello = React.component "HelloSayer" \to ->
+  pure $ R.text ("Hello " <> to <> "!")
+```
+
+
+Now check out all the examples on the left and copy-paste them to your hearts
+content.
+
+<img src="/screenshot.png" height="639" width="765" />

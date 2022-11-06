@@ -1,0 +1,84 @@
+input,
+button,
+form {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+  --focus-ring-col: #009d7d;
+  --focus-outline:
+    /* 0 0 0 0.5px #fff7, */
+    0 0 8px 2px var(--focus-ring-col);
+}
+
+form {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+form > .my-input {
+  transition: width 0.2s ease-in-out;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right-width: 0;
+}
+form:focus-within > .my-input {
+  width: 190px;
+}
+.my-input ~ .my-button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.my-button {
+  --focus-ring-col: var(--button-border-col);
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+  letter-spacing: 0.018px;
+  height: 3.0em;
+  appearance: none;
+  min-width: 80px;
+  border: 1px solid var(--button-border-col, #e5e7e9);
+  color: var(--button-text-col, #e5e7e9);
+  cursor: pointer;
+  background: var(--button-background-col, #f6f8f9);
+  padding: 3px 16px 5px 16px;
+  border-radius: 25px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.167s ease;
+  font-weight: 700;
+}
+
+.my-button:active:enabled {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2), inset 0 0.5px 3px rgba(0, 0, 0, 0.3);
+  transform: translateY(1px);
+}
+.my-input:disabled, .my-button:disabled {
+  box-shadow: none;
+  background: #0001;
+  border-color: #0001;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.my-input:disabled {
+  width: 190px;
+}
+.my-button:focus {
+  outline: none;
+  box-shadow: var(--focus-outline);
+}
+
+.my-input {
+  width: 150px;
+  appearance: none;
+  border: 1px solid #a7b4c1;
+  color: #44404c;
+  border-radius: 25px;
+  cursor: pointer;
+  background: #f6f8f9;
+  padding: 2px 16px;
+}
+
+.my-input:focus {
+  outline: none;
+  border-color: var(--focus-ring-col);
+}
