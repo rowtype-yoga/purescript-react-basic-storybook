@@ -5,8 +5,6 @@ import Prelude
 import React.Basic.DOM as R
 import Storybook (MetaDecorator, metaDecorator)
 
-foreign import registerPS :: Unit -> Unit
-
 appDecorator ∷ MetaDecorator
 appDecorator = metaDecorator $ \child -> do
   let _ = registerPS unit
