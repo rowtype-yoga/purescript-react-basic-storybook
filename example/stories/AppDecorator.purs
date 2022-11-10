@@ -7,7 +7,6 @@ import Storybook (MetaDecorator, metaDecorator)
 
 appDecorator ∷ MetaDecorator
 appDecorator = metaDecorator $ \child -> do
-  let _ = registerPS unit
   R.div
     { style: R.css
         { background: "radial-gradient(#f4f2f5 67%, #efeff2 100%)"
