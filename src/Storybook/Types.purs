@@ -27,7 +27,7 @@ type MetaR props =
   , args :: Args
   , argTypes :: ArgTypes
   , play :: PlayFunction
-  , component :: Effect props
+  , component :: Effect ({ | props } -> JSX)
   , loaders :: Array LoaderFunction
   )
 
@@ -43,9 +43,9 @@ foreign import data ArgTypes :: Type
 
 foreign import data MetaParameters :: Type
 
-foreign import data Meta :: Type
+foreign import data Meta :: Type -> Type
 
-foreign import data Story ∷ Type
+foreign import data Story ∷ Type -> Type
 
 type RequiredStoryOptions props args r =
   ( component :: Effect (props -> JSX)
@@ -63,4 +63,3 @@ type StoryOptions props args argTypes params =
     , play :: PlayFunction
     )
 
-foreign import data ActionArg :: Type

@@ -1,10 +1,5 @@
-export const toStory = (story) => {
-  if (!story.component) return story;
-  const component = story.component();
-  return { ...story, component, render: args => story.render(component)(args) };
+export const toMeta = (meta) => {
+  return { ...meta, component: meta.component() };
 }
 
-export const toMeta = (meta) => {
-  const component = meta.component();
-  return { ...meta, component };
-}
+export const addPlayFunctionImpl = play => story => { story.play = play; return story }

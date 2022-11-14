@@ -1,50 +1,54 @@
-module Story.Button (default, simple, button) where
+module Story.Button (default, button, buttonSimple) where
 
 import Prelude
 
 import AppDecorator (appDecorator)
 import Button (ButtonVariant(..), mkButton)
+import Button as Button
+import Data.Maybe (Maybe(..))
 import Data.Time.Duration (Seconds(..))
 import Data.Time.Duration as Millis
+import Debug (spy)
 import Effect.Aff as Aff
 import React.Basic.DOM as R
-import Storybook (Meta, Story, meta, parameters, playFunction, story, story_)
+import Record.Studio (mapRecord)
+import Storybook (ActionArg, EnumArg(..), LogEffect(..), Meta, Story, enumArg, inferArgTypes, meta, parameters, setDescription, setPlayFunction, story)
 import Storybook.Addon.Actions (action)
 import Storybook.TestingLibrary (within)
 import Storybook.TestingLibrary as STL
 import Web.HTML (window)
 import Web.HTML.Window (alert)
 
-default :: Meta
+default :: Meta Button.Props
 default = meta
   { title: "Examples/Button"
+  , component: mkButton
   , decorators: [ appDecorator ]
   , tags: [ "docsPage" ]
-  , parameters: parameters
-      { docs:
-          { inlineStories: true
-          , description:
-              { component: componentDescription
-              , story: "merkel"
-              }
-          , source:
-              { language: "purescript"
-              , code:
-                  """
-mkButtonExample :: Effect JSX
-mkButtonExample = do
-  buttonView <- Button.mkButton
-  pure $ buttonView
-    { content: R.text "Hello"
-    , onClick: mempty
-    , buttonVariant: Button.Primary
-    , disabled: false
-    }
-"""
-              }
-          }
-      }
-  , component: mkButton
+  --   , parameters: parameters
+  --       { docs:
+  --           { inlineStories: true
+  --           , description:
+  --               { component: componentDescription
+  --               , story: "merkel"
+  --               }
+  --           , source:
+  --               { language: "purescript"
+  --               , code:
+  --                   """
+  -- mkButtonExample :: Effect JSX
+  -- mkButtonExample = do
+  --   buttonView <- Button.mkButton
+  --   pure $ buttonView
+  --     { content: R.text "Hello"
+  --     , onClick: mempty
+  --     , buttonVariant: Button.Primary
+  --     , disabled: false
+  --     }
+  -- """
+  --               }
+  -- }
+  -- }
   }
 
 componentDescription ∷ String
@@ -62,68 +66,37 @@ You get it by supplying to your default export (`Meta`):
 Just read the code, and [create an issue](https://github.com/rowtype-yoga/purescript-react-basic-storybook/issues/new?title=Documentation+is+shit&body=I+do+not+understand+how+to) if you don't understand something
   """
 
-simple ∷ Story
-simple = story_
-  { name: "Simple"
-  , component: mkButton
-  , render: \btn _ -> btn
-      { content: R.text "Click me"
-      , buttonVariant: Primary
-      , onClick: window >>= alert "Clicked"
-      , disabled: false
-      }
-  }
+button ∷ Story Button.Props
+button = story args argTypes # setPlayFunction playFunction
+  where
 
-button ∷ Story
-button = story
-  { name: "Button"
-  , component: mkButton
-  , render: \btn args -> do
-      btn
-        { content: R.text args.label
-        , disabled: false
-        , onClick: (action "Oh Yeah" 4)
-        , buttonVariant: case args.variant of
-            "Primary" -> Primary
-            "Regular" -> Regular
-            "Danger" -> Danger
-            _ -> Primary
-        }
-  , args: { label: "Hello", variant: "Primary" }
-  , argTypes:
-      { label: { control: "text" }
-      , variant:
-          { control: { type: "select" }
-          , type: { name: "ButtonVariant", required: true }
-          , table: { type: { summary: "ButtonVariant", detail: "Button.ButtonVariant" } }
-          , description: "A colour variant"
-          , options: [ "Primary", "Regular", "Danger" ]
-          }
-      }
-  , play: playFunction \{ canvasElement } -> do
-      canvas <- within canvasElement
-      buttonElem <- canvas.findByTestId "my-button"
-      Aff.delay (Millis.fromDuration (2.0 # Seconds))
-      STL.click buttonElem
-  -- , parameters: { docs: { description: "Hi"}}
-  -- , parameters:
-  -- { docs:
-  -- {
-  --   description: { component: "A nice little button" }
-  -- ,
-  -- source:
-  --     { excludeDecorators: true
-  --     , sourceType: "code"
-  -- , transformSource: mkEffectFn2 \source more ->do
-  --     let _ = spy "source" source
-  --     let _ = spy "more" more
-  --     pure source
-  --               , code:
-  --                   """do
-  --   button <- mkButton
-  --   pure $ button { onClick: Console.log "Help!", label: R.text "Click me" }
-  -- """
-  -- }
-  -- }
-  -- }
-  }
+  args =
+    { content: "Hello"
+    , buttonVariant: enumArg { "Variant": Button.Regular }
+    , disabled: false
+    , onClick: LogEffect "onClick"
+    }
+
+  inferredArgTypes = inferArgTypes args
+
+  argTypes = inferredArgTypes #
+    setDescription { content: "The text in the Button" }
+      >>> setDescription { buttonVariant: "The colour of the button" }
+      >>>
+        setDescription { disabled: "Whether the button is active or not" }
+
+  playFunction = \{ canvasElement } -> do
+    canvas <- within canvasElement
+    buttonElem <- canvas.findByTestId "my-button"
+    Aff.delay (Millis.fromDuration (2.0 # Seconds))
+    STL.click buttonElem
+
+buttonSimple ∷ Story Button.Props
+buttonSimple = story args $ inferArgTypes args
+  where
+  args =
+    { content: "Hello"
+    , buttonVariant: EnumArg Button.Primary :: _ "Variant" _
+    , disabled: false
+    , onClick: LogEffect "onClick"
+    }

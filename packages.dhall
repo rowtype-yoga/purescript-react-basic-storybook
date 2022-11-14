@@ -117,12 +117,8 @@ let additions =
 -------------------------------
 -}
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.15.4-20221028/packages.dhall
-        sha256:9193f88e77654ccca02c1f7519c81308aca69818b6513ea8e47618e4dd3bf750
+      https://github.com/purescript/package-sets/releases/download/psc-0.15.4-20221113/packages.dhall
+        sha256:95ac28941d3f333c086498b0bb5c1813efa67657a5eded6c1bd3f48213f2c30a
 
 in  upstream
-  with record-studio =
-    { repo = "https://github.com/rowtype-yoga/purescript-record-studio.git"
-    , version = "v1.0.1"
-    , dependencies = [ "heterogeneous", "lists", "prelude", "record", "typelevel-prelude" ]
-    }
+  with record-studio.version = "v1.0.4"

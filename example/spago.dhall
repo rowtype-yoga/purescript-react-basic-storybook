@@ -13,6 +13,7 @@ to generate this file without the comments in this block.
 { name = "storybook-example"
 , dependencies =
   [ "effect"
+  , "enums"
   , "foldable-traversable"
   , "foreign-object"
   , "prelude"

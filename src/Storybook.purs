@@ -1,35 +1,46 @@
 module Storybook
   ( meta
-  , story_
-  , story
-  , simpleStory
   , parameters
-  , playFunction
+  , setPlayFunction
   , loaderFunction
   , metaDecorator
+  , story
   , module Storybook.Types
+  , module Storybook.Addon.Docs.Types
+  , module Storybook.Addon.Docs
   ) where
 
 import Prelude
+import Storybook.Types (ArgTypes, Args, LoaderFunction, Meta, MetaComponent, MetaDecorator, MetaParameters, MetaR, PlayFunction, RequiredStoryOptions, Story, StoryContext, StoryDecorator, StoryOptions)
+import Storybook.Addon.Docs.Types (ArgType, FromStorybookArgHelper(..), StorybookArgType, argTypeToStorybook)
+import Storybook.Addon.Docs (MapArgType, argsTableImpl, descriptionImpl, mapArgType, primaryImpl, primaryStoryImpl, setDescription, setName, setRequired, setType, setTypeDetail, storiesImpl, subtitleImpl, titleImpl, setControl)
 
 import Control.Promise (Promise)
 import Control.Promise as Promise
+import Data.Function.Uncurried (mkFn2)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Uncurried (EffectFn1, EffectFn2, mkEffectFn1, mkEffectFn2)
-import Data.Function.Uncurried (mkFn2)
 import Foreign (Foreign, unsafeToForeign)
+import Heterogeneous.Folding (class HFoldlWithIndex)
+import Heterogeneous.Mapping (class HMap, hmap)
 import Prim.Row (class Union)
+import Prim.RowList (class RowToList)
 import React.Basic (JSX)
-import Record.Studio (class SameKeys)
+import Record.Builder (Builder)
+import Record.Studio (MapRecord, mapRecord)
 import Storybook.TestingLibrary.Types (CanvasElement)
-import Storybook.Types (LoaderFunction, Meta, MetaDecorator, MetaParameters, MetaR, PlayFunction, RequiredStoryOptions, Story, StoryContext, StoryOptions)
+import Type.Row.Homogeneous (class Homogeneous)
 import Unsafe.Coerce (unsafeCoerce)
 
-meta :: forall props attrs attrs_. Union attrs attrs_ (MetaR props) => { | attrs } -> Meta
+meta
+  :: forall props attrs attrs_
+   . Union attrs attrs_ (MetaR props)
+  => { | attrs }
+  -> Meta { | props }
 meta = toMeta
 
-foreign import toMeta :: forall r. { | r } -> Meta
+foreign import toMeta :: forall r props. { | r } -> Meta props
 
 loaderFunction :: forall a. (Foreign -> Aff { | a }) -> LoaderFunction
 loaderFunction fn = toLoaderFunction
@@ -38,75 +49,45 @@ loaderFunction fn = toLoaderFunction
   toLoaderFunction :: (EffectFn1 Foreign (Promise (Foreign))) -> LoaderFunction
   toLoaderFunction = unsafeCoerce
 
-playFunction :: ({ canvasElement :: CanvasElement } -> Aff Unit) -> PlayFunction
-playFunction fn = toPlayFn
-  (mkEffectFn1 $ \x -> Promise.fromAff (fn x))
-  where
-  toPlayFn :: (EffectFn1 { canvasElement :: CanvasElement } (Promise Unit)) -> PlayFunction
-  toPlayFn = unsafeCoerce
-
 parameters :: forall r. r -> MetaParameters
 parameters = unsafeCoerce
 
 metaDecorator ∷ (JSX -> JSX) → MetaDecorator
 metaDecorator fn = toMetaDecorator $ mkEffectFn2 \effJSX _args -> do
-  -- [TODO] Expose args?
-  -- let _ = spy "args" args
-  -- yields
-  --  ↓↓↓
-  {-
-    abortSignal : AbortSignal {aborted: false, reason: undefined, onabort: null}
-    allArgs : {label: 'Gerwin, der Arsch'}
-    applyLoaders : async c=> {…}
-    argTypes : {label: {…}}
-    args : {label: 'Gerwin, der Arsch'}
-    argsByTarget : {"": {…}}
-    canvasElement : div#storybook-root
-    component : undefined
-    componentId : "button"
-    globals : {backgrounds: null, measureEnabled: false, outline: false}
-    hooks : x {hookListsMap: WeakMap, mountedDecorators: Set(7), prevMountedDecorators: Set(7), currentHooks: Array(0), renderListener: ƒ, …}
-    id : "button--button"
-    initialArgs : {label: 'Hello'}
-    kind : "Button"
-    loaded : {}
-    moduleExport : {name: 'Button', args: {…}, argTypes: {…}, component: ƒ, render: ƒ}
-    name : "Button"
-    originalStoryFn : args => story.render(component)(args)
-    parameters : {framework: 'react', docs: {…}, backgrounds: {…}, fileName: './output/Story.Filter/index.js', __isArgsStory: true}
-    playFunction : undefined
-    story : "Button"
-    subcomponents : undefined
-    tags : ['story']
-    title : "Button"
-    unboundStoryFn : c=> {…}
-    undecoratedStoryFn : c=> {…}
-    viewMode : "story"
-  -}
   jsx <- effJSX
   pure $ fn jsx
   where
   toMetaDecorator ∷ EffectFn2 (Effect JSX) Foreign JSX → MetaDecorator
   toMetaDecorator = unsafeCoerce
 
-simpleStory :: forall props. props -> Story
-simpleStory props = toStory { render: mkFn2 \_ ctx -> ctx.component props }
-
-story_
-  :: forall props opts opts_
-   . Union (RequiredStoryOptions props {} opts) opts_ (StoryOptions props {} {} {})
-  => { | RequiredStoryOptions props {} opts }
-  -> Story
-story_ = toStory
-
 story
-  :: forall props args argTypes params opts opts_
-   . SameKeys args argTypes
-  => Union (RequiredStoryOptions props { | args } opts)
-       opts_
-       (StoryOptions props { | args } { | argTypes } { | params })
-  => { | RequiredStoryOptions props { | args } opts }
-  -> Story
-story = toStory
+  :: forall props args propsRL argsRL argTypes argTypesRL storybookArgTypes
+   . RowToList props propsRL
+  => RowToList args argsRL
+  => RowToList argTypes argTypesRL
+  => HMap FromStorybookArgHelper { | args } { | props }
+  => HFoldlWithIndex (MapRecord ArgType StorybookArgType) (Builder {} {}) { | argTypes } (Builder {} { | storybookArgTypes })
+  --  => SameKeys args argTypes
+  => Homogeneous argTypes ArgType
+  => { | args }
+  -> { | argTypes }
+  -> Story { | props }
+story args argTypes = toStory
+  { render: mkFn2 \(currentArgs :: { | args }) ctx ->
+      (ctx.component :: { | props } -> JSX)
+        (hmap FromStorybookArgHelper currentArgs :: { | props })
+  , argTypes: (mapRecord argTypeToStorybook argTypes) :: { | storybookArgTypes }
+  , args
+  }
+  where
+  toStory :: _ -> Story { | props }
+  toStory = unsafeCoerce
 
-foreign import toStory :: forall a. a -> Story
+foreign import addPlayFunctionImpl :: forall p. PlayFunction -> Story p -> Story p
+
+setPlayFunction :: forall p. ({ canvasElement :: CanvasElement } -> Aff Unit) -> Story p -> Story p
+setPlayFunction fn = addPlayFunctionImpl $ toPlayFn (mkEffectFn1 $ \x -> Promise.fromAff (fn x))
+  where
+  toPlayFn :: (EffectFn1 { canvasElement :: CanvasElement } (Promise Unit)) -> PlayFunction
+  toPlayFn = unsafeCoerce
+

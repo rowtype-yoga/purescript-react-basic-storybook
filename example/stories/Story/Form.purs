@@ -17,19 +17,18 @@ import React.Basic.DOM as R
 import React.Basic.DOM.Events (capture_)
 import React.Basic.Hooks as React
 import React.Basic.Hooks.Aff (useAff)
-import Storybook (Meta, Story, meta, playFunction, story_)
+import Storybook (Meta, Story, meta, setPlayFunction, story)
 import Storybook.Addon.Actions (action)
 import Storybook.TestingLibrary (typeText, within)
 import Storybook.TestingLibrary as STL
 
-default :: Meta
+default :: Meta {}
 default = meta { title: "Examples/Form", component: mkHelper }
 
-form ∷ Story
-form = story_
-  { component: mkHelper
-  , render: \frm _args -> frm unit
-  , play: playFunction \{ canvasElement } -> do
+form ∷ Story {}
+form = story {} {} #
+  setPlayFunction
+    \{ canvasElement } -> do
       canvas <- within canvasElement
       inputElem <- canvas.findByTestId "my-input"
       String.toCodePointArray "This is a test" # traverse_ \cp -> do
@@ -39,9 +38,8 @@ form = story_
       buttonElem <- canvas.findByTestId "my-button"
       Aff.delay (Millis.fromDuration (0.2 # Seconds))
       STL.click buttonElem
-  }
 
-mkHelper :: React.Component Unit
+mkHelper :: React.Component {}
 mkHelper = do
   input <- mkInput
   button <- mkButton
@@ -52,9 +50,9 @@ mkHelper = do
     let disabled = loading
 
     let
+      wait = Aff.delay (Milliseconds 66.67)
+      write txt = setButtonText txt # liftEffect
       changeLoadingText = forever do
-        let wait = Aff.delay (Milliseconds 100.0)
-        let write txt = setButtonText txt # liftEffect
         write "🙉" *> wait
         write "🙈" *> wait
         write "🙊" *> wait

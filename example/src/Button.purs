@@ -2,6 +2,10 @@ module Button where
 
 import Prelude
 
+import Data.Bounded.Generic (genericBottom, genericTop)
+import Data.Enum (class BoundedEnum, class Enum)
+import Data.Enum.Generic (genericCardinality, genericFromEnum, genericPred, genericSucc, genericToEnum)
+import Data.Generic.Rep (class Generic)
 import Effect (Effect)
 import Foreign.Object as Object
 import React.Basic (JSX)
@@ -17,6 +21,23 @@ type Props =
   }
 
 data ButtonVariant = Primary | Regular | Danger
+
+derive instance Generic ButtonVariant _
+derive instance Ord ButtonVariant
+derive instance Eq ButtonVariant
+
+instance Enum ButtonVariant where
+  succ = genericSucc
+  pred = genericPred
+
+instance Bounded ButtonVariant where
+  bottom = genericBottom
+  top = genericTop
+
+instance BoundedEnum ButtonVariant where
+  cardinality = genericCardinality
+  toEnum = genericToEnum
+  fromEnum = genericFromEnum
 
 mkButton :: React.Component Props
 mkButton = do
